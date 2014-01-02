@@ -8,4 +8,4 @@ ipkg install mlocate
 
 
 
-cd /tmp/subliminal /opt/bin/python2.7 setup.py install 
+cd subliminal /opt/bin/python2.7 setup.py install 
