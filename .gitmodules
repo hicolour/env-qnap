@@ -1,3 +1,6 @@
 [submodule "subliminal"]
 	path = subliminal
 	url = git@github.com:Diaoul/subliminal.git
+[submodule "napi"]
+	path = napi
+	url = git@github.com:dagon666/napi.git
