@@ -12,7 +12,7 @@ search(){
   dir=$1
   type=$2
   echo "Find in "$dir  
-  for file in $(find $dir -type f -name "*.$type")
+  for file in $(find $dir -type f $type)
   do
 
     echo File: $file
