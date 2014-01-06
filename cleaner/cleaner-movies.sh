@@ -1,26 +1,64 @@
 #!/bin/bash
 
-in="/share/Download/transmission/completed" 
-out="/share/Movies/movies-new"
+dir_in=$1
+out=$2
 
-FILE_TYPES="-name \"*.mkv\" -o -name \"*.avi\" "
+FILE_TYPES="-name *.mkv -o -name *.avi"
 
-for file in $(/opt/bin/find -L $in \( ${FILE_TYPES} \))
+
+#find $dir_in  -name "*.mkv" -exec echo {}
+
+
+grep="/opt/bin/grep"
+sed="/opt/bin/sed"
+
+#!/bin/bash
+#shopt -s globstar
+shopt -s nullglob
+for file in $dir_in/**/*.{mkv,mp4,avi}
 do
- 	echo File: $file
+        echo "------------------"
+        echo "$file"
+
+        dirname=$(dirname "$file")
+        filename=$(basename "$file")
+        extension="${filename##*.}"
+        filenamei2="${filename%.*}"
+
+        date=$(echo $filename | $grep -Eo '(19|20)[0-9][0-9]')
+
+        titledate=$(echo $filename | $grep -Eo '(([a-zA-Z]*)\.*)*((19|20)[0-9][0-9])')
+
+        title=$(echo $titledate | $grep -Eo '(([a-zA-Z]*)\.*)*')
+
+        echo "file: $filename"
+        echo "ext: $extension"
+        echo "dirname: $dirname"
+
+        echo "date: $date"
+        echo "titledate: $titledate"
+        echo "title: $title"
+
+        if [ -n "$date" ] && [ -n "$title" ];
+        then
+                echo "date!"
+                ptitle=$(echo $title | sed 's/\.$//' | sed 's/ /*/g')
+                echo $ptitle
+
+                echo "Creating dir: $out/$date-$ptitle"
+                mkdir $out/$date-$ptitle
+
+                echo "Moving file: $file"
+                mv "$file" $out/$date-$ptitle/
+
+                if [[ $dir_in == *"$dirname"* ]]; then
+                        echo "Removing file: $file"
+                        rm "$file"
+                else
+                        echo "Removing dir: $dirname"
+                        rm -rf "$dirname"
+                fi
+
+        fi
+
 done
-
-
-# search(){
-#   dir=$1
-#   type=$2
-#   echo "Find in "$dir  
-#   for file in $(find $dir -type f "$type")
-#   do
-
-#     echo File: $file
-
-#   done
-# }
-# echo init
-# search $in $FILE_TYPES
